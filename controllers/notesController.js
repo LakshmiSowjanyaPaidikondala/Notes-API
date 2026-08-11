@@ -2,79 +2,85 @@
 
 const notesModel = require("../models/notesModel");
 
-function getAllNotes(req,res){
-        notesModel.getAllNotes((error,result)=>{
-                        if (error) {
-                            console.log(error);
-                            return res.status(500).send("Database Error");
-                        }
-                        res.json(result);
-                    });
+async function getAllNotes(req,res){
+        try{
+            const result = await notesModel.getAllNotes();
+            res.json(result);
+        }
+        catch(error){
+            console.log(error);
+            res.status(500).send("Database Error");
+        }
 }
 
-function getNoteById(req,res){
+async function getNoteById(req,res){
     const id = req.params.id;
-    notesModel.getNoteById(id,(error,result)=>{
-                        if(error){
-                            return res.status(500).send("Database Error");
-                        }
-                        if(result.length==0){
-                            return res.status(404).send("Note not found");
-                        }
-                        res.json(result[0]);
-                     });
+    try{
+        const result = await notesModel.getNoteById(id);
+        if(result.length == 0){
+            return res.status(404).send("Note not found");
+        }
+        res.json(result[0]);
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).send("Database Error");
+    }
 }
 
-function createNote(req,res){
+async function createNote(req,res){
     const {title, content} = req.body;
     //This is similar to
     //const title = req.body.title;
     //const content = req.body.content;
-    notesModel.createNote(title,content,(error,result)=>{
-                if(error){
-                    return res.status(500).send("Database Error");
-                }
-                res.status(201).json({
+    try{
+        const result = await notesModel.createNote(title,content);
+        res.status(201).json({
                     message: "Note created successfully",
                     id: result.insertId
                 });
-            }
-    );
+    }
+    catch(error){
+        console.log(error);
+        res.status(500).send("Database Error");
+    }
+
 }
 
-function updateNote(req,res){
+async function updateNote(req,res){
         const id = req.params.id;
         // const title = req.body.title;
         // const content = req.body.content;
         const {title, content} = req.body;
-        notesModel.updateNote(title,content,id,(error,result)=>{
-                            if(error){
-                                return res.status(500).send("Database Error");
-                            }
-                            if(result.affectedRows==0){
-                                return res.status(404).send("Notes not found");
-                            }
-                            res.status(200).json({
+        try{
+            
+            const result = await notesModel.updateNote(title,content,id);
+            if (result.affectedRows === 0) {
+                return res.status(404).send("Note not found");
+            }
+            res.status(200).json({
                                 message:"Notes updated successfully"
                             });
-                          }
-        );
+        }catch(error){
+            console.log(error);
+            res.status(500).send("Database Error");
+        }
 }
 
-function deleteNote(req,res){
-    const id = req.params.id;
-    notesModel.deleteNote(id,(error,result)=>{
-                        if(error){
-                            return res.status(500).send("Database Error");
-                        }
-                        if(result.affectedRows==0){
-                            return res.status(404).send("Notes not found");
-                        }
-                        res.status(200).json({
+async function deleteNote(req,res){
+    try{
+        const id = req.params.id;
+        const result = await notesModel.deleteNote(id);
+        if (result.affectedRows === 0) {
+            return res.status(404).send("Note not found");
+        }
+         res.status(200).json({
                             message:"Note deleted successfully"
                         });
-                     }
-    );
+    }catch(error){
+        console.log(error);
+        res.status(500).send("Database Error");
+    }
 }
 
 module.exports = {
