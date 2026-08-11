@@ -2,28 +2,33 @@
 
 const connection = require("../config/db");
 
-function getAllNotes(callback){
-    connection.query("SELECT * FROM notes",callback);
+async function getAllNotes(){
+    const [result]= await connection.query("SELECT * FROM notes");
+    return result;
 }
 
-function getNoteById(id,callback){
-    connection.query("SELECT * FROM notes WHERE id=?",
-                     [id], callback);
+async function getNoteById(id){
+    const [result] = await connection.query("SELECT * FROM notes WHERE id=?",
+                     [id]);
+    return result;
 }
 
-function createNote(title,content,callback){
-    connection.query("INSERT INTO notes(title,content) VALUES(?,?)",
-            [title,content],callback);
+async function createNote(title,content){
+    const [result] = await connection.query("INSERT INTO notes(title,content) VALUES(?,?)",
+            [title,content]);
+    return result;
 }
 
-function updateNote(title,content,id,callback){
-    connection.query("UPDATE notes SET title=?,content=? WHERE id = ?",
-                          [title,content,id],callback);
+async function updateNote(title,content,id){
+    const [result] = await connection.query("UPDATE notes SET title=?,content=? WHERE id = ?",
+                          [title,content,id]);
+    return result;
 }
 
-function deleteNote(id,callback){
-    connection.query("DELETE FROM notes WHERE id=?",
-                     [id],callback);
+async function deleteNote(id){
+    const [result] = await connection.query("DELETE FROM notes WHERE id=?",
+                     [id]);
+    return result;
 }
 
 module.exports = {
