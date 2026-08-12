@@ -2,33 +2,34 @@
 
 const notesModel = require("../models/notesModel");
 
-async function getAllNotes(req,res){
+async function getAllNotes(req,res,next){
         try{
+            
             const result = await notesModel.getAllNotes();
             res.json(result);
         }
         catch(error){
-            console.log(error);
-            res.status(500).send("Database Error");
+            next(error);
         }
 }
 
-async function getNoteById(req,res){
+async function getNoteById(req,res,next){
     const id = req.params.id;
     try{
         const result = await notesModel.getNoteById(id);
         if(result.length == 0){
-            return res.status(404).send("Note not found");
+            const error = new Error("Note not found");
+            error.statusCode = 404;
+            return next(error);
         }
         res.json(result[0]);
     }
     catch(error){
-        console.log(error);
-        res.status(500).send("Database Error");
+        next(error);
     }
 }
 
-async function createNote(req,res){
+async function createNote(req,res,next){
     const {title, content} = req.body;
     //This is similar to
     //const title = req.body.title;
@@ -41,13 +42,12 @@ async function createNote(req,res){
                 });
     }
     catch(error){
-        console.log(error);
-        res.status(500).send("Database Error");
+        next(error);
     }
 
 }
 
-async function updateNote(req,res){
+async function updateNote(req,res,next){
         const id = req.params.id;
         // const title = req.body.title;
         // const content = req.body.content;
@@ -56,30 +56,32 @@ async function updateNote(req,res){
             
             const result = await notesModel.updateNote(title,content,id);
             if (result.affectedRows === 0) {
-                return res.status(404).send("Note not found");
+                const error = new Error("Note not found");
+                error.statusCode = 404;
+                return next(error);
             }
             res.status(200).json({
                                 message:"Notes updated successfully"
                             });
         }catch(error){
-            console.log(error);
-            res.status(500).send("Database Error");
+            next(error);
         }
 }
 
-async function deleteNote(req,res){
+async function deleteNote(req,res,next){
     try{
         const id = req.params.id;
         const result = await notesModel.deleteNote(id);
         if (result.affectedRows === 0) {
-            return res.status(404).send("Note not found");
+            const error = new Error("Note not found");
+            error.statusCode = 404;
+            return next(error);
         }
          res.status(200).json({
                             message:"Note deleted successfully"
                         });
     }catch(error){
-        console.log(error);
-        res.status(500).send("Database Error");
+        next(error);
     }
 }
 
