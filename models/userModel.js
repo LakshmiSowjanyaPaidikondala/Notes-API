@@ -6,6 +6,14 @@ async function createUser(username,hashedpassword) {
                     [username,hashedpassword]);
     return result;
 }
+
+async function findUserByUsername(username){
+    const [result]= await connection.query(
+                    "SELECT * FROM users where username=?",
+                    [username]);
+    return result;
+}
 module.exports = {
-    createUser
+    createUser,
+    findUserByUsername
 };
