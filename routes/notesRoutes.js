@@ -5,8 +5,9 @@ const notesController = require("../controllers/notesController");
 const validateNote = require("../middleware/noteValidation");
 const validateId = require("../middleware/idValidation");
 const authMiddleware = require("../middleware/authMiddleware");
+const validatePagination = require("../middleware/paginationValidation");
 
-router.get("/",authMiddleware,notesController.getAllNotes);
+router.get("/",authMiddleware,validatePagination,notesController.getAllNotes);
 
 router.get("/:id",authMiddleware,validateId,notesController.getNoteById);
 
