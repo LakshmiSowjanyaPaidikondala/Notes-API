@@ -24,9 +24,7 @@ Each note belongs to the authenticated user, so users can access and modify **on
 - [📊 HTTP Status Codes](#-http-status-codes)
 - [🔒 Security](#-security)
 - [🔮 Future Improvements](#-future-improvements)
-
 ---
-
 ## ✨ Features
 
 - 👤 User registration and login
